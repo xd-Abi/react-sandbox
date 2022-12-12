@@ -2,7 +2,7 @@ import {Card} from "primereact/card";
 import {Divider} from "primereact/divider";
 import {useForm} from "react-hook-form";
 
-import {Container, FormField} from "../Utility";
+import {Container, FormCalendar, FormField} from "../Utility";
 import SignUpFormType from "./SignUpFormType";
 
 const SignUp = () => {
@@ -38,10 +38,19 @@ const SignUp = () => {
           <div className="col-12 md:col-6">
             <FormField
               id="email"
+              label="Email"
+              required
+              control={control}
+              error={errors.email?.message}
+            />
+          </div>
+          <div className="col-12 md:col-6">
+            <FormCalendar
+              id="birthdate"
               label="Date of Birth"
               required
               control={control}
-              error={errors.city?.message}
+              error={errors.birthdate?.message}
             />
           </div>
           <Divider align="center">
