@@ -1,17 +1,19 @@
-import {SignUp} from "./Components";
+import {Provider as GlobalStoreProvider} from "react-redux";
+import GlobalStore from "./store";
+import SignUp from "./components/SignUp";
 
 import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 
-import "./Styles/App.css";
+import "./styles/App.css";
 
 const App = () => {
   return (
-    <div className="pt-8">
+    <GlobalStoreProvider store={GlobalStore}>
       <SignUp />
-    </div>
+    </GlobalStoreProvider>
   );
 };
 

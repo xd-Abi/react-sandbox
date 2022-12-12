@@ -1,6 +1,4 @@
-interface IContainerProps {
-  children: React.ReactNode;
-}
+import {IContainerProps} from "./types";
 
 const Container = (props: IContainerProps) => {
   return (
