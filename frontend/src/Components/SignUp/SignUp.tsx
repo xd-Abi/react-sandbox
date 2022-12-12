@@ -1,8 +1,9 @@
 import {Card} from "primereact/card";
 import {Divider} from "primereact/divider";
+import {useState} from "react";
 import {useForm} from "react-hook-form";
 
-import {Container, FormCalendar, FormField} from "../Utility";
+import {Container, FormCalendar, FormDropdown, FormField} from "../Utility";
 import SignUpFormType from "./SignUpFormType";
 
 const SignUp = () => {
@@ -84,11 +85,23 @@ const SignUp = () => {
             />
           </div>
           <div className="col-12 md:col-6">
-            <FormField
+            <FormDropdown
               id="country"
               label="Country"
               required
               control={control}
+              options={[
+                {label: "Australia", value: "AU"},
+                {label: "Brazil", value: "BR"},
+                {label: "China", value: "CN"},
+                {label: "Egypt", value: "EG"},
+                {label: "France", value: "FR"},
+                {label: "Germany", value: "DE"},
+                {label: "India", value: "IN"},
+                {label: "Japan", value: "JP"},
+                {label: "Spain", value: "ES"},
+                {label: "United States", value: "US"},
+              ]}
               error={errors.country?.message}
             />
           </div>
