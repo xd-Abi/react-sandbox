@@ -1,0 +1,4 @@
+body, html {
+    /* From Prime react theme */
+    background-color: var(--surface-ground);
+}
