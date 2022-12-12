@@ -1,4 +1,10 @@
-body, html {
+body,
+html {
     /* From Prime react theme */
     background-color: var(--surface-ground);
+}
+
+.p-card {
+    border-radius: 1.5rem !important;
+    box-shadow: 5px 5px 33px 5px #8f98aa31 !important;
 }
