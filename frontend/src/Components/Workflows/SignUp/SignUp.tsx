@@ -8,6 +8,8 @@ import PersonalStep from "./PersonalStep";
 import PersonalStepType from "./Types/PersonalStepType";
 import ResidenceStepType from "./Types/ResidenceStepType";
 import ResidenceStep from "./ResidenceStep";
+import AccountCreationStep from "./AccountCreationStep";
+import AccountCreationStepType from "./Types/AccountCreationStepType";
 
 const SignUp = () => {
   enum SignUpWorkflowStep {
@@ -23,7 +25,11 @@ const SignUp = () => {
   );
 
   const updateFormState = (
-    data: PersonalStepType | PasswordStepType | ResidenceStepType
+    data:
+      | PersonalStepType
+      | PasswordStepType
+      | ResidenceStepType
+      | AccountCreationStepType
   ) => {
     setFormState({
       ...data,
@@ -46,6 +52,10 @@ const SignUp = () => {
     setCurrentStep(SignUpWorkflowStep.AccountCreation);
   };
 
+  const onAccountCreationStepSubmit = (data: AccountCreationStepType) => {
+    updateFormState(data);
+  };
+
   return (
     <Container>
       <div className="grid">
@@ -60,6 +70,9 @@ const SignUp = () => {
             )}
             {currentStep === SignUpWorkflowStep.Residence && (
               <ResidenceStep onSubmit={onResidenceStepSubmit} />
+            )}
+            {currentStep === SignUpWorkflowStep.AccountCreation && (
+              <AccountCreationStep onSubmit={onAccountCreationStepSubmit} />
             )}
           </Card>
         </div>

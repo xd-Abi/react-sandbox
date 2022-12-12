@@ -1,5 +1,4 @@
 import {yupResolver} from "@hookform/resolvers/yup";
-import {InputText} from "primereact/inputtext";
 import {Controller, useForm} from "react-hook-form";
 import * as yup from "yup";
 import {Password} from "primereact/password";
