@@ -1,0 +1,23 @@
+
+version: "3"
+
+services: 
+  form-app:
+    build: .
+    ports: 
+      - "3002:3002"
+    depends_on:
+      - db
+
+
+  db:
+    image: postgres
+    ports: 
+      - "5555:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_USER=TIE
+      - POSTGRES_PASSWORD=TIE-International
+      - POSTGRES_DB=tie-DB
+
