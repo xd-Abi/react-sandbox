@@ -4,6 +4,8 @@ import SignUpFormType from "./Types/SignUpFormType";
 import PasswordStepType from "./Types/PasswordStepType";
 import {Container} from "../../Utility";
 import {Card} from "primereact/card";
+import PersonalStep from "./PersonalStep";
+import PersonalStepType from "./Types/PersonalStepType";
 
 const SignUp = () => {
   enum SignUpWorkflowStep {
@@ -15,8 +17,17 @@ const SignUp = () => {
 
   const [formState, setFormState] = useState<SignUpFormType>();
   const [currentStep, setCurrentStep] = useState<SignUpWorkflowStep>(
-    SignUpWorkflowStep.Password
+    SignUpWorkflowStep.Personal
   );
+
+  const onPersonalStepSubmit = (data: PersonalStepType) => {
+    setFormState({
+      ...data,
+      ...formState,
+    } as SignUpFormType);
+
+    setCurrentStep(SignUpWorkflowStep.Password);
+  };
 
   return (
     <Container>
@@ -24,6 +35,9 @@ const SignUp = () => {
         <div className="xl:col-5">
           <Card className="md:pr-5 md:pl-5 lg:pr-7 lg:pl-7">
             <h1 className="mb-5">Sign Up</h1>
+            {currentStep === SignUpWorkflowStep.Personal && (
+              <PersonalStep onSubmit={onPersonalStepSubmit} />
+            )}
             {currentStep === SignUpWorkflowStep.Password && (
               <PasswordStep onSubmit={(e: PasswordStepType) => {}} />
             )}

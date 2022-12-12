@@ -37,7 +37,7 @@ const PasswordStep = (props: PasswordStepProps) => {
 
   return (
     <form className="grid" onSubmit={handleSubmit(props.onSubmit)}>
-      <div className="col-12">
+      <div className="col-12 p-0 m-0">
         <p>Password</p>
         <div className="p-inputgroup">
           <Controller
@@ -55,7 +55,7 @@ const PasswordStep = (props: PasswordStepProps) => {
         </div>
         {<p className="p-error block">{errors.password?.message}</p>}
       </div>
-      <div className="col-12">
+      <div className="col-12 p-0 m-0">
         <p>Confirm Password</p>
         <div className="p-inputgroup">
           <InputText
