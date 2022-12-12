@@ -18,20 +18,22 @@ const FormCalendar = (props: IFormCalendarProps) => {
   return (
     <Controller
       render={({field: {onChange, value}}: any) => (
-        <div className="p-float-label">
-          <Calendar
-            id={props.id}
-            disabled={props.disabled}
-            className={`p-inputgroup ${errorClassNames()}`}
-            value={value ? new Date(value) : null}
-            onChange={onChange}
-          />
+        <div>
+          <div className="p-float-label">
+            <Calendar
+              id={props.id}
+              disabled={props.disabled}
+              className={`p-inputgroup ${errorClassNames()}`}
+              value={value ? new Date(value) : null}
+              onChange={onChange}
+            />
+            <label htmlFor={props.id}>{props.label}</label>
+          </div>
           {props.error !== "" && (
             <p id={props.id} className="p-error block">
               {props.error}
             </p>
           )}
-          <label htmlFor={props.id}>{props.label}</label>
         </div>
       )}
       control={props.control}

@@ -22,20 +22,24 @@ const FormDropdown = (props: IFormDropdownProps) => {
   return (
     <Controller
       render={({field}: any) => (
-        <div className="p-float-label">
-          <Dropdown
-            id={props.id}
-            disabled={props.disabled}
-            className={`p-inputgroup ${errorClassNames()}`}
-            options={props.options}
-            {...field}
-          />
+        <div>
+          <div className="p-float-label">
+            <Dropdown
+              id={props.id}
+              disabled={props.disabled}
+              className={`p-inputgroup ${errorClassNames()}`}
+              options={props.options}
+              filter
+              {...field}
+            />
+
+            <label htmlFor={props.id}>{props.label}</label>
+          </div>
           {props.error !== "" && (
             <p id={props.id} className="p-error block">
               {props.error}
             </p>
           )}
-          <label htmlFor={props.id}>{props.label}</label>
         </div>
       )}
       control={props.control}
