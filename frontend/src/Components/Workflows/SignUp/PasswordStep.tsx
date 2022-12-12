@@ -28,7 +28,6 @@ const PasswordStep = (props: PasswordStepProps) => {
   const {
     handleSubmit,
     control,
-    register,
     formState: {errors},
   } = useForm<PasswordStepType>({
     resolver: yupResolver(yupValidationSchema),
@@ -48,6 +47,7 @@ const PasswordStep = (props: PasswordStepProps) => {
                 className={`p-inputtext-lg ${
                   errors.password?.message ? "p-invalid" : ""
                 }`}
+                toggleMask
                 {...field}
               />
             )}
@@ -58,11 +58,18 @@ const PasswordStep = (props: PasswordStepProps) => {
       <div className="col-12 p-0 m-0">
         <p>Confirm Password</p>
         <div className="p-inputgroup">
-          <InputText
-            className={`p-inputtext-lg ${
-              errors.repeatPassword?.message ? "p-invalid" : ""
-            }`}
-            {...register("repeatPassword")}
+          <Controller
+            control={control}
+            name="repeatPassword"
+            render={({field}: any) => (
+              <Password
+                className={`p-inputtext-lg ${
+                  errors.repeatPassword?.message ? "p-invalid" : ""
+                }`}
+                toggleMask
+                {...field}
+              />
+            )}
           />
         </div>
         {<p className="p-error block">{errors.repeatPassword?.message}</p>}

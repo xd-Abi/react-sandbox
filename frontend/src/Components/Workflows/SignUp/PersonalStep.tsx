@@ -30,7 +30,14 @@ const PersonalStep = (props: PersonalStepProps) => {
       .string()
       .required("Email is required")
       .email("Invalid email format"),
-    birthdate: yup.string().required("Birthdate is required"),
+    birthdate: yup
+      .date()
+      .required("Birthdate is required")
+      .max(
+        new Date(Date.now() - 567648000000),
+        "You must be at least 18 years old"
+      )
+      .typeError("The value must be a date"),
   });
 
   const {
