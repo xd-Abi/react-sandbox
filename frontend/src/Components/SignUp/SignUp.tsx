@@ -1,17 +1,22 @@
 import {Card} from "primereact/card";
 import {Divider} from "primereact/divider";
-import {useState} from "react";
 import {useForm} from "react-hook-form";
+import * as yup from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
 
 import {Container, FormCalendar, FormDropdown, FormField} from "../Utility";
 import SignUpFormType from "./SignUpFormType";
+import SignUpValidationSchema from "./SignUpValidationSchema";
 
 const SignUp = () => {
   const {
     handleSubmit,
     control,
     formState: {errors},
-  } = useForm<SignUpFormType>();
+  } = useForm<SignUpFormType>({
+    resolver: yupResolver(SignUpValidationSchema),
+    mode: "onChange",
+  });
 
   return (
     <Container>
@@ -21,7 +26,7 @@ const SignUp = () => {
           <div className="col-12 md:col-6">
             <FormField
               id="name"
-              label="Name"
+              label="Full Name"
               required
               control={control}
               error={errors.name?.message}
@@ -29,7 +34,7 @@ const SignUp = () => {
           </div>
           <div className="col-12 md:col-6">
             <FormField
-              id="user"
+              id="username"
               label="Username"
               required
               control={control}
@@ -119,11 +124,11 @@ const SignUp = () => {
           </div>
           <div className="col-12 md:col-6">
             <FormField
-              id="repeat-password"
+              id="repeatPassword"
               label="Comfirm Password"
               required
               control={control}
-              error={errors.password?.message}
+              error={errors.repeatPassword?.message}
             />
           </div>
         </form>

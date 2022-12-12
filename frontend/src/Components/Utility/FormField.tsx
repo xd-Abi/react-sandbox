@@ -18,20 +18,22 @@ const FormField = (props: IFormFieldProps) => {
   return (
     <Controller
       render={({field}: any) => (
-        <span className="p-float-label">
-          <InputText
-            id={props.id}
-            disabled={props.disabled}
-            className={`p-inputgroup ${errorClassNames()}`}
-            {...field}
-          />
+        <div>
+          <span className="p-float-label">
+            <InputText
+              id={props.id}
+              disabled={props.disabled}
+              className={`p-inputgroup ${errorClassNames()}`}
+              {...field}
+            />
+            <label htmlFor={props.id}>{props.label}</label>
+          </span>
           {props.error !== "" && (
             <p id={props.id} className="p-error block">
               {props.error}
             </p>
           )}
-          <label htmlFor={props.id}>{props.label}</label>
-        </span>
+        </div>
       )}
       control={props.control}
       name={props.id}
