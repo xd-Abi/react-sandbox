@@ -100,7 +100,7 @@ const PersonalStep = (props: PersonalStepProps) => {
         {<p className="p-error block">{errors.phoneNumber?.message}</p>}
       </div>
 
-      <div className="col-12">
+      <div className="col-12 pt-3">
         <div className="flex justify-content-center">
           <Button icon="pi pi-check" label="Continue" type="submit" />
         </div>
