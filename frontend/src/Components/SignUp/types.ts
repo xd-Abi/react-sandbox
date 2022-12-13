@@ -10,6 +10,7 @@ export type SignUpWorkflowStepProps = {
   onNextButtonClick?: () => void;
 };
 
-export type SignUpWorkflowSubmitProps = {
+export type VerificationProps = {
   onSubmit: () => void;
+  onReCaptchaFailure: () => void;
 };

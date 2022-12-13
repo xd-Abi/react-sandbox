@@ -5,15 +5,18 @@ import {Tag} from "primereact/tag";
 import {Controller, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import ReCAPTCHA from "react-google-recaptcha";
 
 import {useSignUpDispatch} from "../../../hooks";
 import {verificationChange, VerificationChangeType} from "../../../store/user";
-import {SignUpWorkflowStepProps, SignUpWorkflowSubmitProps} from "../types";
+import {SignUpWorkflowStepProps, VerificationProps} from "../types";
 import {useRef} from "react";
 import {ErrorOption} from "react-hook-form/dist/types";
+import axios from "axios";
+import {ReCaptchaConfig} from "../../../config";
 
 const VerificationStep = (
-  props: SignUpWorkflowStepProps & SignUpWorkflowSubmitProps
+  props: SignUpWorkflowStepProps & VerificationProps
 ) => {
   const yupValidationSchema = yup.object<
     Record<keyof VerificationChangeType, yup.AnySchema>
@@ -27,6 +30,7 @@ const VerificationStep = (
 
   const dispatch = useSignUpDispatch();
   const fileUploadRef = useRef<FileUpload>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const {
     handleSubmit,
@@ -41,17 +45,36 @@ const VerificationStep = (
     },
   });
 
-  const onSubmit = (data: VerificationChangeType) => {
+  const validateRecaptchaToken = async () => {
+    const token = await recaptchaRef.current!.executeAsync();
+
+    const result = await axios.post(
+      "https://www.google.com/recaptcha/api/siteverify",
+      {},
+      {
+        params: {
+          secret: ReCaptchaConfig.secret,
+          response: token,
+        },
+      }
+    );
+
+    if (result.data.success) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const validateFileUpload = () => {
     const file = fileUploadRef.current?.getFiles()[0]!;
 
     if (file === undefined) {
       setError("idConfirmationFile", {
         message: "Upload a file to confirm your identity",
       } as ErrorOption);
-
       return;
     }
-
     const supportedFileTypes = ["image/jpeg", "image/jpg", "application/pdf"];
 
     // TODO: Check the mimetype of the file using binary
@@ -61,16 +84,28 @@ const VerificationStep = (
           "File type is not supported. Supported file types are jpeg, jpg and pdf. ",
       } as ErrorOption);
 
+      return false;
+    }
+
+    return true;
+  };
+
+  const onSubmit = async (data: VerificationChangeType) => {
+    if ((await validateRecaptchaToken()) === false) {
+      props.onReCaptchaFailure();
+      return;
+    }
+
+    if (validateFileUpload() === false) {
       return;
     }
 
     dispatch(
       verificationChange({
         isTermsAndConditionsAccepted: data.isTermsAndConditionsAccepted,
-        idConfirmationFile: file,
+        idConfirmationFile: fileUploadRef.current?.getFiles()[0]!,
       })
     );
-
     props.onSubmit();
   };
 
@@ -113,6 +148,11 @@ const VerificationStep = (
 
   return (
     <div>
+      <ReCAPTCHA
+        ref={recaptchaRef}
+        sitekey={ReCaptchaConfig.siteKey}
+        size="invisible"
+      />
       <h1>Sign Up</h1>
       <form className="grid" onSubmit={handleSubmit(onSubmit)}>
         <div className="col-12 p-0 m-0 mt-4">
@@ -165,6 +205,7 @@ const VerificationStep = (
             </label>
           </div>
         </div>
+
         <div className="col-12 pt-6">
           <div className="flex justify-content-center">
             <Button

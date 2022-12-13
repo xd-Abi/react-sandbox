@@ -17,6 +17,14 @@ const SignUp = () => {
   );
   const toastRef = useRef<Toast>(null);
 
+  const onReCaptchaFailure = () => {
+    toastRef.current!.show({
+      severity: "error",
+      summary: "ReCAPTCHA failed",
+      detail: "Google ReCAPTCHA failed",
+    });
+  };
+
   const onSubmit = async () => {
     const state = getSignUpState();
 
@@ -109,6 +117,7 @@ const SignUp = () => {
                     setCurrentStep(SignUpWorkflowSteps.AccountInfo)
                   }
                   onSubmit={onSubmit}
+                  onReCaptchaFailure={onReCaptchaFailure}
                 />
               )}
             </div>
