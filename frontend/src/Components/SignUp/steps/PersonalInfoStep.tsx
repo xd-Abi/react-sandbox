@@ -1,5 +1,5 @@
 import {InputText} from "primereact/inputtext";
-import {Calendar} from "primereact/calendar";
+import {Calendar, CalendarChangeParams} from "primereact/calendar";
 import {Button} from "primereact/button";
 import {Controller, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -58,14 +58,7 @@ const PersonalInfoStep = (props: SignUpWorkflowStepProps) => {
   });
 
   const onSubmit = (data: PersonalInfoChangeType) => {
-    dispatch(
-      personalInfoChange({
-        fullname: data.fullname,
-        birthdate: new Date(data.birthdate).toISOString(),
-        email: data.email,
-        phoneNumber: data.phoneNumber,
-      })
-    );
+    dispatch(personalInfoChange(data));
 
     props.onNextButtonClick!();
   };
@@ -97,12 +90,10 @@ const PersonalInfoStep = (props: SignUpWorkflowStepProps) => {
                   className={`p-inputtext-lg ${
                     errors.birthdate?.message ? "p-invalid" : ""
                   }`}
-                  onChange={(e: any) =>
-                    field.onChange(
-                      new Date(e.target.value as string).toISOString()
-                    )
+                  onChange={(e: CalendarChangeParams) =>
+                    field.onChange(e.target.value)
                   }
-                  value={new Date(field.value)}
+                  value={field.value !== undefined ? field.value : null}
                   onBlur={field.onBlur}
                 />
               )}

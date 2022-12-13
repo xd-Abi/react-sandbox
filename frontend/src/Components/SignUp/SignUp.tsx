@@ -1,5 +1,6 @@
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {Card} from "primereact/card";
+import {Toast} from "primereact/toast";
 import Container from "../Container";
 import AccountInfoStep from "./steps/AccountInfoStep";
 import PersonalInfoStep from "./steps/PersonalInfoStep";
@@ -9,19 +10,19 @@ import {SignUpWorkflowSteps} from "./types";
 import {getSignUpState} from "../../store";
 import axios from "axios";
 import {BackendConfig} from "../../config";
-import * as fs from "fs";
 
 const SignUp = () => {
   const [currentStep, setCurrentStep] = useState<SignUpWorkflowSteps>(
     SignUpWorkflowSteps.PersonalInfo
   );
+  const toastRef = useRef<Toast>(null);
 
   const onSubmit = async () => {
     const state = getSignUpState();
 
     const multipartFormData = new FormData();
     multipartFormData.append("name", state.fullname!);
-    multipartFormData.append("birthdate", state.birthdate!);
+    multipartFormData.append("dateOfBirth", state.birthdate!.toString());
     multipartFormData.append("email", state.email!);
     multipartFormData.append("phoneNumber", state.phoneNumber!);
     multipartFormData.append("address", state.address!);
@@ -38,13 +39,39 @@ const SignUp = () => {
         multipartFormData
       )
       .then(() => {
-        console.log("done");
+        toastRef.current!.show({
+          severity: "success",
+          summary: `Welcome ${state.username}!`,
+          detail: "Successfully registered",
+        });
+      })
+      .catch(error => {
+        const statusCode = error.response.status;
+
+        switch (statusCode) {
+          case 405:
+            toastRef.current!.show({
+              severity: "error",
+              summary: "Sign Up Failed",
+              detail: "Email already taken!",
+            });
+            setCurrentStep(SignUpWorkflowSteps.AccountInfo);
+
+            break;
+          default:
+            toastRef.current!.show({
+              severity: "error",
+              summary: "Sign Up Failed",
+              detail: "Internal Server Error",
+            });
+        }
+        console.log(error);
       });
   };
 
   return (
     <Container>
-      <input type="file" onChange={e => console.log(e)} />
+      <Toast ref={toastRef} />
       <div className="grid h-screen">
         <div className="xl:col-5 lg:mt-5">
           <Card className="md:pr-5 md:pl-5 lg:pr-7 lg:pl-7 md:mt-5 lg:mt-8">

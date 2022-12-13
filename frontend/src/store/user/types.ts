@@ -3,7 +3,7 @@ export type SignUpStateType = {
   password?: string | undefined;
   confirmPassword?: string | undefined;
   fullname?: string | undefined;
-  birthdate?: string | undefined;
+  birthdate?: Date | undefined;
   email?: string | undefined;
   phoneNumber?: string | undefined;
   address?: string | undefined;
@@ -11,7 +11,7 @@ export type SignUpStateType = {
   postcode?: string | undefined;
   country?: string | undefined;
   isTermsAndConditionsAccepted?: boolean | undefined;
-  idConfirmationFile: string;
+  idConfirmationFile: File;
 };
 
 export type AccountInfoChangeType = {
@@ -29,12 +29,12 @@ export type ResidenceChangeType = {
 
 export type PersonalInfoChangeType = {
   fullname: string;
-  birthdate: string;
+  birthdate: Date;
   email: string;
   phoneNumber: string;
 };
 
 export type VerificationChangeType = {
   isTermsAndConditionsAccepted: boolean;
-  idConfirmationFile: string;
+  idConfirmationFile: File;
 };

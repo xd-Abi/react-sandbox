@@ -1,16 +1,16 @@
 import {Button} from "primereact/button";
 import {Checkbox} from "primereact/checkbox";
-import {FileUpload, FileUploadHeaderTemplateType} from "primereact/fileupload";
+import {FileUpload} from "primereact/fileupload";
 import {Tag} from "primereact/tag";
 import {Controller, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import {useSignUpDispatch, useSignUpSelector} from "../../../hooks";
+import {useSignUpDispatch} from "../../../hooks";
 import {verificationChange, VerificationChangeType} from "../../../store/user";
 import {SignUpWorkflowStepProps, SignUpWorkflowSubmitProps} from "../types";
-import {useRef, useState} from "react";
-import axios from "axios";
+import {useRef} from "react";
+import {ErrorOption} from "react-hook-form/dist/types";
 
 const VerificationStep = (
   props: SignUpWorkflowStepProps & SignUpWorkflowSubmitProps
@@ -22,7 +22,7 @@ const VerificationStep = (
       .bool()
       .required("")
       .oneOf([true], "Accept terms and conditions"),
-    idConfirmationFile: yup.string(),
+    idConfirmationFile: yup.string().optional(),
   });
 
   const dispatch = useSignUpDispatch();
@@ -31,22 +31,43 @@ const VerificationStep = (
   const {
     handleSubmit,
     control,
+    setError,
     formState: {errors},
   } = useForm<VerificationChangeType>({
     resolver: yupResolver(yupValidationSchema),
     mode: "onChange",
+    defaultValues: {
+      isTermsAndConditionsAccepted: false,
+    },
   });
 
-  const onBackButtonClick = () => {
-    props.onBackButtonClick!();
-  };
-
   const onSubmit = (data: VerificationChangeType) => {
-    const file = fileUploadRef.current?.getFiles()[0]! as any;
+    const file = fileUploadRef.current?.getFiles()[0]!;
+
+    if (file === undefined) {
+      setError("idConfirmationFile", {
+        message: "Upload a file to confirm your identity",
+      } as ErrorOption);
+
+      return;
+    }
+
+    const supportedFileTypes = ["image/jpeg", "image/jpg", "application/pdf"];
+
+    // TODO: Check the mimetype of the file using binary
+    if (!supportedFileTypes.includes(file.type)) {
+      setError("idConfirmationFile", {
+        message:
+          "File type is not supported. Supported file types are jpeg, jpg and pdf. ",
+      } as ErrorOption);
+
+      return;
+    }
+
     dispatch(
       verificationChange({
         isTermsAndConditionsAccepted: data.isTermsAndConditionsAccepted,
-        idConfirmationFile: file.objectURL,
+        idConfirmationFile: file,
       })
     );
 
@@ -54,7 +75,7 @@ const VerificationStep = (
   };
 
   const headerTemplate = (options: any) => {
-    const {className, chooseButton, uploadButton, cancelButton} = options;
+    const {className, chooseButton} = options;
 
     return (
       <div
@@ -86,12 +107,6 @@ const VerificationStep = (
           severity="warning"
           className="px-3 py-2"
         />
-        <Button
-          type="button"
-          icon="pi pi-times"
-          className="p-button-outlined p-button-rounded p-button-danger ml-auto"
-          onClick={() => props.onRemove}
-        />
       </div>
     );
   };
@@ -105,13 +120,15 @@ const VerificationStep = (
           <div className="input-field">
             <Controller
               control={control}
-              name="idConfirmationFile"
+              name="isTermsAndConditionsAccepted"
               render={({field}: any) => (
                 <FileUpload
                   ref={fileUploadRef}
                   customUpload
                   accept="image/*"
                   maxFileSize={1000000}
+                  headerTemplate={headerTemplate}
+                  itemTemplate={itemTemplate}
                 />
               )}
             />
@@ -152,7 +169,7 @@ const VerificationStep = (
           <div className="flex justify-content-center">
             <Button
               label="Back"
-              onClick={onBackButtonClick}
+              onClick={() => props.onBackButtonClick!()}
               className="mr-3 p-button-secondary"
             />
             <Button label="Create Account" type="submit" />
