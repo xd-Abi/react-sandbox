@@ -6,20 +6,45 @@ import PersonalInfoStep from "./steps/PersonalInfoStep";
 import ResidenceStep from "./steps/ResidenceStep";
 import VerificationStep from "./steps/VerificationStep";
 import {SignUpWorkflowSteps} from "./types";
-import GlobalStore from "../../store";
+import {getSignUpState} from "../../store";
 import axios from "axios";
+import {BackendConfig} from "../../config";
+import * as fs from "fs";
 
 const SignUp = () => {
   const [currentStep, setCurrentStep] = useState<SignUpWorkflowSteps>(
     SignUpWorkflowSteps.PersonalInfo
   );
 
-  const onSubmit = () => {
-    console.log(process.env.REACT_APP_BACKEND_PORT);
+  const onSubmit = async () => {
+    const state = getSignUpState();
+
+    const multipartFormData = new FormData();
+    multipartFormData.append("name", state.fullname!);
+    multipartFormData.append("birthdate", state.birthdate!);
+    multipartFormData.append("email", state.email!);
+    multipartFormData.append("phoneNumber", state.phoneNumber!);
+    multipartFormData.append("address", state.address!);
+    multipartFormData.append("city", state.city!);
+    multipartFormData.append("postcode", state.postcode!);
+    multipartFormData.append("country", state.country!);
+    multipartFormData.append("username", state.username!);
+    multipartFormData.append("password", state.password!);
+    multipartFormData.append("idConfirmation", state.idConfirmationFile!);
+
+    axios
+      .post(
+        `${BackendConfig.domain}:${BackendConfig.port}/login`,
+        multipartFormData
+      )
+      .then(() => {
+        console.log("done");
+      });
   };
 
   return (
     <Container>
+      <input type="file" onChange={e => console.log(e)} />
       <div className="grid h-screen">
         <div className="xl:col-5 lg:mt-5">
           <Card className="md:pr-5 md:pl-5 lg:pr-7 lg:pl-7 md:mt-5 lg:mt-8">

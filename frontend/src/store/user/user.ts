@@ -3,13 +3,13 @@ import {
   AccountInfoChangeType,
   PersonalInfoChangeType,
   ResidenceChangeType,
-  SignUpState,
+  SignUpStateType,
   VerificationChangeType,
 } from "./types";
 
 export const SignUpSlice = createSlice({
   name: "signUp",
-  initialState: {} as SignUpState,
+  initialState: {} as SignUpStateType,
   reducers: {
     accountInfoChange: (
       state,
@@ -40,6 +40,7 @@ export const SignUpSlice = createSlice({
     ) => {
       state.isTermsAndConditionsAccepted =
         action.payload.isTermsAndConditionsAccepted;
+      state.idConfirmationFile = action.payload.idConfirmationFile;
     },
   },
 });

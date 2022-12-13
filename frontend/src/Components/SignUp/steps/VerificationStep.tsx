@@ -10,6 +10,7 @@ import {useSignUpDispatch, useSignUpSelector} from "../../../hooks";
 import {verificationChange, VerificationChangeType} from "../../../store/user";
 import {SignUpWorkflowStepProps, SignUpWorkflowSubmitProps} from "../types";
 import {useRef, useState} from "react";
+import axios from "axios";
 
 const VerificationStep = (
   props: SignUpWorkflowStepProps & SignUpWorkflowSubmitProps
@@ -19,41 +20,38 @@ const VerificationStep = (
   >({
     isTermsAndConditionsAccepted: yup
       .bool()
-      .required("re")
+      .required("")
       .oneOf([true], "Accept terms and conditions"),
+    idConfirmationFile: yup.string(),
   });
 
   const dispatch = useSignUpDispatch();
-  const initialState = useSignUpSelector();
+  const fileUploadRef = useRef<FileUpload>(null);
 
   const {
     handleSubmit,
     control,
     formState: {errors},
-    getValues,
   } = useForm<VerificationChangeType>({
     resolver: yupResolver(yupValidationSchema),
     mode: "onChange",
-    defaultValues: {
-      ...initialState,
-    },
   });
 
   const onBackButtonClick = () => {
-    dispatch(
-      verificationChange({
-        isTermsAndConditionsAccepted: getValues("isTermsAndConditionsAccepted"),
-      })
-    );
     props.onBackButtonClick!();
   };
 
   const onSubmit = (data: VerificationChangeType) => {
-    dispatch(verificationChange(data));
+    const file = fileUploadRef.current?.getFiles()[0]! as any;
+    dispatch(
+      verificationChange({
+        isTermsAndConditionsAccepted: data.isTermsAndConditionsAccepted,
+        idConfirmationFile: file.objectURL,
+      })
+    );
+
     props.onSubmit();
   };
-
-  const fileUploadRef = useRef<FileUpload>(null);
 
   const headerTemplate = (options: any) => {
     const {className, chooseButton, uploadButton, cancelButton} = options;
@@ -97,6 +95,7 @@ const VerificationStep = (
       </div>
     );
   };
+
   return (
     <div>
       <h1>Sign Up</h1>
@@ -106,17 +105,22 @@ const VerificationStep = (
           <div className="input-field">
             <Controller
               control={control}
-              name="isTermsAndConditionsAccepted"
+              name="idConfirmationFile"
               render={({field}: any) => (
                 <FileUpload
-                  multiple={false}
-                  headerTemplate={headerTemplate}
-                  itemTemplate={itemTemplate}
                   ref={fileUploadRef}
+                  customUpload
+                  accept="image/*"
+                  maxFileSize={1000000}
                 />
               )}
             />
           </div>
+          {
+            <p className="p-error block">
+              {errors.idConfirmationFile?.message}
+            </p>
+          }
         </div>
         <div className="col-12 p-0 m-0 mt-6 flex justify-content-center">
           <div className="field-checkbox">

@@ -1,4 +1,4 @@
-export type SignUpState = {
+export type SignUpStateType = {
   username?: string | undefined;
   password?: string | undefined;
   confirmPassword?: string | undefined;
@@ -11,6 +11,7 @@ export type SignUpState = {
   postcode?: string | undefined;
   country?: string | undefined;
   isTermsAndConditionsAccepted?: boolean | undefined;
+  idConfirmationFile: string;
 };
 
 export type AccountInfoChangeType = {
@@ -35,4 +36,5 @@ export type PersonalInfoChangeType = {
 
 export type VerificationChangeType = {
   isTermsAndConditionsAccepted: boolean;
+  idConfirmationFile: string;
 };

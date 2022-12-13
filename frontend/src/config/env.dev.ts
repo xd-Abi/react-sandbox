@@ -1,4 +1,4 @@
-const backendDomain = process.env.REACT_APP_BACKEND_PORT;
+const backendDomain = process.env.REACT_APP_BACKEND_DOMAIN;
 const backendPort = process.env.REACT_APP_BACKEND_PORT;
 
 if (backendDomain === "" || backendDomain === undefined) {
