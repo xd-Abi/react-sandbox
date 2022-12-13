@@ -7,6 +7,7 @@ import ResidenceStep from "./steps/ResidenceStep";
 import VerificationStep from "./steps/VerificationStep";
 import {SignUpWorkflowSteps} from "./types";
 import GlobalStore from "../../store";
+import axios from "axios";
 
 const SignUp = () => {
   const [currentStep, setCurrentStep] = useState<SignUpWorkflowSteps>(
@@ -14,7 +15,7 @@ const SignUp = () => {
   );
 
   const onSubmit = () => {
-    console.log(GlobalStore.getState().signUp);
+    console.log(process.env.REACT_APP_BACKEND_PORT);
   };
 
   return (
@@ -65,7 +66,7 @@ const SignUp = () => {
           <img
             src={process.env.PUBLIC_URL + "/images/sign_up_wallpaper.svg"}
             alt="Sign Up"
-            width="80%"
+            width="85%"
             className="hidden xl:block"
           />
         </div>
